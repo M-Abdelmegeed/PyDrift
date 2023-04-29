@@ -47,16 +47,20 @@ class Player():
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
-            self.x -= self.vel
+            if self.x > (width/2 - road_width/2 + roadmark_width*2 -6):
+                self.x -= self.vel
 
         if keys[pygame.K_RIGHT]:
-            self.x += self.vel
+            if self.x < (width/2 + road_width/2 - roadmark_width*2 -25):
+                self.x += self.vel
 
         if keys[pygame.K_UP]:
-            self.y -= self.vel
+            if self.y > 0:
+                self.y -= self.vel
 
         if keys[pygame.K_DOWN]:
-            self.y += self.vel
+            if self.y < height-45:
+                self.y += self.vel
 
         self.update()
         
