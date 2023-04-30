@@ -5,7 +5,7 @@ import pickle
 
 size = width , height = (600,600)
 road_width=int(width/1.5)
-server = "192.168.35.192"
+server = "192.168.1.21"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

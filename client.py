@@ -21,7 +21,7 @@ left_lane = 150
 center_lane = 250
 
 
-def redrawWindow(win,player, players,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc):
+def redrawWindow(win,player, players,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc,label_rect,label_surface):
     win.fill((11,52,163))
     pygame.draw.rect(win,(33,33,33),(width/2 - road_width/2, 0,road_width,height))
     # pygame.draw.rect(win,(255,240,60),(width/2 - roadmark_width/2, 0, roadmark_width,height)) //That's the center line
@@ -35,6 +35,7 @@ def redrawWindow(win,player, players,lane_marker_move_y,motorcycle,motorcycle_lo
     # player.draw(win)
     # players[0].draw(win)
     # players[1].draw(win)
+    win.blit(label_surface,label_rect)
     player.draw_car(win)
     players[0].draw_car(win)
     players[1].draw_car(win)
@@ -55,6 +56,7 @@ ferrari_loc.center = random.randint(width/2 - road_width/2 + roadmark_width*2 -6
 
 
 def main():
+    pygame.init()
     run = True
     lane_marker_move_y = 0
     n = Network()
@@ -83,7 +85,11 @@ def main():
         lane_marker_move_y += speed * 2
         if lane_marker_move_y >= marker_height * 2:
             lane_marker_move_y = 0
-        redrawWindow(win, p, p2,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc)
+        label_font = pygame.font.Font(None, 24)
+        label_surface = label_font.render('7ambozoo', True, (255,255,255))
+        label_rect = label_surface.get_rect()
+        label_rect.topleft = (p.x-18, p.y+90)
+        redrawWindow(win, p, p2,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc,label_rect,label_surface)
         
 
 main()
