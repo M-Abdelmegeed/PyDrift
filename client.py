@@ -22,10 +22,10 @@ left_lane = 150
 center_lane = 250
 
 
-def redrawWindow(win,player, players,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc,label_rect,label_surface):
+def redrawWindow(win,player, reply_object,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc,label_rect,label_surface):
     win.fill((11,52,163))
-    print("No of players: "+ str(players[2]))
-    if int(players[2]) < 3:
+    print("No of players: "+ str(reply_object["Connections"]))
+    if int(reply_object["Connections"]) < 3:
         loading_font = pygame.font.Font(None, 64)
         loading_surface = loading_font.render('Waiting for others to join...', True, (255,255,255))
         loading_rect = loading_surface.get_rect()
@@ -33,8 +33,8 @@ def redrawWindow(win,player, players,lane_marker_move_y,motorcycle,motorcycle_lo
         win.blit(loading_surface, loading_rect)
         pygame.display.update()
     else:
-        print(players[3])
-        game_time_display = "Game-time: "+str(players[3])
+        print(reply_object["Game Time"])
+        game_time_display = "Game-time: "+str(reply_object["Game Time"])
         game_time_font = pygame.font.Font(None, 18)
         game_time_surface = game_time_font.render(game_time_display, True, (255,255,255))
         game_time_rect = game_time_surface.get_rect()
@@ -55,8 +55,8 @@ def redrawWindow(win,player, players,lane_marker_move_y,motorcycle,motorcycle_lo
         # players[1].draw(win)
         win.blit(label_surface,label_rect)
         player.draw_car(win)
-        players[0].draw_car(win)
-        players[1].draw_car(win)
+        reply_object["Opponent 1"].draw_car(win)
+        reply_object["Opponent 2"].draw_car(win)
         win.blit(motorcycle,motorcycle_loc)
         win.blit(ferrari,ferrari_loc)
         pygame.display.update()
@@ -92,7 +92,7 @@ def main(playerName):
             ferrari_loc[1] =- 600
             ferrari_loc.center = random.randint(width/2 - road_width/2 + roadmark_width*2 -6,width/2 + road_width/2 - roadmark_width*2 -25) , 0
         clock.tick(60)
-        p2 = n.send(p)
+        reply_object = n.send(p)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -107,7 +107,7 @@ def main(playerName):
         label_surface = label_font.render(playerName, True, (255,255,255))
         label_rect = label_surface.get_rect()
         label_rect.center = (p.x+15, p.y+100)
-        redrawWindow(win, p, p2,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc,label_rect,label_surface)
+        redrawWindow(win, p, reply_object,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc,label_rect,label_surface)
  
    
 input_text = ''

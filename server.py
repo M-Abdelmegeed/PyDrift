@@ -39,11 +39,20 @@ def threaded_client(conn, player):
                 break
             else:
                 if player == 1:
-                    reply = [players[0],players[2],no_of_connections,game_time]
+                    reply = {"Opponent 1":players[0],
+                             "Opponent 2":players[2],
+                             "Connections":no_of_connections,
+                             "Game Time":game_time}
                 elif player == 0:
-                    reply = [players[1],players[2],no_of_connections,game_time]
+                    reply ={"Opponent 1":players[1],
+                             "Opponent 2":players[2],
+                             "Connections":no_of_connections,
+                             "Game Time":game_time}
                 else:
-                    reply = [players[0],players[1],no_of_connections,game_time]
+                    reply = {"Opponent 1":players[0],
+                             "Opponent 2":players[1],
+                             "Connections":no_of_connections,
+                             "Game Time":game_time}
 
                 print("Received: ", data)
                 print("Sending : ", reply)
