@@ -144,6 +144,13 @@ def homeScreen():
     submit_rect = submit_surface.get_rect()
     submit_rect.topleft = (submit_button.x +15, submit_button.y+15)        
     home_running = True
+    
+    # Load the music file
+    pygame.mixer.music.load('Audio Files/(FIFA 14) Smallpools - Dreaming.mp3')
+
+    # Set the volume and play the music on an infinite loop
+    pygame.mixer.music.set_volume(0.7)
+    pygame.mixer.music.play(-1)
     while home_running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
