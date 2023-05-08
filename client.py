@@ -154,8 +154,10 @@ def redrawWindow(
             win.blit(game_time_surface, game_time_rect)
             win.blit(label_surface, label_rect)
             player.draw_car(win)
-            reply_object["Opponent 1"].draw_car(win)
-            reply_object["Opponent 2"].draw_car(win)
+            if reply_object["Opponent 1"] != "":
+                reply_object["Opponent 1"].draw_car(win)
+            if reply_object["Opponent 2"] != "":
+                reply_object["Opponent 2"].draw_car(win)
             win.blit(motorcycle, motorcycle_loc)
             win.blit(ferrari, ferrari_loc)
         pygame.display.update()
@@ -203,7 +205,7 @@ def main(playerName):
             gameOver = True
             print("Game Over")
             clock.tick(60)
-            reply_object = n.send(p)
+            reply_object = n.send({"loc": p, "crashed": True})
             # redrawWindow(win, p, reply_object,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc,label_rect,label_surface,score,gameOver)
         else:
             motorcycle_loc[1] += speed
@@ -230,7 +232,7 @@ def main(playerName):
                     0,
                 )
             clock.tick(60)
-            reply_object = n.send(p)
+            reply_object = n.send({"loc": p, "crashed": False})
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -361,4 +363,4 @@ def homeScreen():
 
 
 # homeScreen()
-main("A7o")
+main("Test")

@@ -37,8 +37,10 @@ def threaded_client(conn, player):
     while True:
         try:
             data = pickle.loads(conn.recv(2048))
-            players[player] = data
-
+            print("Data:", data)
+            players[player] = data["loc"]
+            if data["crashed"]:
+                players[player] = ""
             if not data:
                 print("Disconnected")
                 break
@@ -65,8 +67,8 @@ def threaded_client(conn, player):
                         "Game Time": game_time,
                     }
 
-                print("Received: ", data)
-                print("Sending : ", reply)
+                # print("Received: ", data)
+                # print("Sending : ", reply)
 
             conn.sendall(pickle.dumps(reply))
         except:
