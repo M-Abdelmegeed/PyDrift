@@ -120,14 +120,27 @@ def redrawWindow(
             crash_rect.center = (player_rect.x, player_rect.y)
             win.blit(crash, crash_rect)
             game_over_font = pygame.font.Font(None, 64)
-            game_over_surface = game_over_font.render(
-                "Game Over", True, (255, 255, 255)
-            )
+            game_over_surface = game_over_font.render("Game Over", True, (255, 10, 10))
             game_over_rect = game_over_surface.get_rect()
             game_over_rect.center = (width / 2, height / 2)
             win.blit(game_over_surface, game_over_rect)
             game_time_font = pygame.font.Font(None, 44)
             score_surface = game_time_font.render(
+                "Score: " + str(score), True, (255, 255, 255)
+            )
+            score_rect = score_surface.get_rect()
+            score_rect.center = (width / 2, height / 2 + 55)
+            win.blit(score_surface, score_rect)
+        elif reply_object["won"] == True:
+            won_font = pygame.font.Font(None, 64)
+            won_surface = won_font.render(
+                "Congratulations, you won!", True, (15, 255, 15)
+            )
+            won_rect = won_surface.get_rect()
+            won_rect.center = (width / 2, height / 2)
+            win.blit(won_surface, won_rect)
+            score_font = pygame.font.Font(None, 44)
+            score_surface = score_font.render(
                 "Score: " + str(score), True, (255, 255, 255)
             )
             score_rect = score_surface.get_rect()
@@ -198,13 +211,56 @@ def main(playerName):
     score = 0
     speed = 3
 
+    reply_object = n.send({"loc": p, "crashed": False})
     while run:
         player_rect = pygame.Rect(p.x - 5, p.y - 5, p.width - 15, p.height - 10)
+        while reply_object["Connections"] < 3:
+            reply_object = n.send({"loc": p, "crashed": False})
+            print("Waiting for other players...")
+            label_font = pygame.font.Font(None, 24)
+            label_surface = label_font.render(playerName, True, (255, 255, 255))
+
+            redrawWindow(
+                win,
+                p,
+                reply_object,
+                lane_marker_move_y,
+                motorcycle,
+                motorcycle_loc,
+                ferrari,
+                ferrari_loc,
+                pygame.Rect(0, 0, 0, 0),
+                label_surface,
+                score,
+                gameOver,
+            )
+        while reply_object["won"]:
+            reply_object = n.send({"loc": p, "crashed": False})
+            label_font = pygame.font.Font(None, 24)
+            label_surface = label_font.render(playerName, True, (255, 255, 255))
+            redrawWindow(
+                win,
+                p,
+                reply_object,
+                lane_marker_move_y,
+                motorcycle,
+                motorcycle_loc,
+                ferrari,
+                ferrari_loc,
+                pygame.Rect(0, 0, 0, 0),
+                label_surface,
+                score,
+                gameOver,
+            )
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    pygame.quit()
         if player_rect.colliderect(motorcycle_loc):
             lane_marker_move_y = 1
             gameOver = True
             print("Game Over")
-            clock.tick(60)
+            # clock.tick(60)
             reply_object = n.send({"loc": p, "crashed": True})
             # redrawWindow(win, p, reply_object,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc,label_rect,label_surface,score,gameOver)
         else:
@@ -233,6 +289,7 @@ def main(playerName):
                 )
             clock.tick(60)
             reply_object = n.send({"loc": p, "crashed": False})
+            print(reply_object["won"])
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

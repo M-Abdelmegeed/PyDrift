@@ -6,7 +6,7 @@ import time
 
 size = width, height = (600, 600)
 road_width = int(width / 1.5)
-server = "192.168.70.192"
+server = "192.168.1.21"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -46,26 +46,56 @@ def threaded_client(conn, player):
                 break
             else:
                 if player == 1:
-                    reply = {
-                        "Opponent 1": players[0],
-                        "Opponent 2": players[2],
-                        "Connections": no_of_connections,
-                        "Game Time": game_time,
-                    }
+                    if (players[0] == "") and (players[2] == ""):
+                        reply = {
+                            "Opponent 1": players[0],
+                            "Opponent 2": players[2],
+                            "Connections": no_of_connections,
+                            "Game Time": game_time,
+                            "won": True,
+                        }
+                    else:
+                        reply = {
+                            "Opponent 1": players[0],
+                            "Opponent 2": players[1],
+                            "Connections": no_of_connections,
+                            "Game Time": game_time,
+                            "won": False,
+                        }
                 elif player == 0:
-                    reply = {
-                        "Opponent 1": players[1],
-                        "Opponent 2": players[2],
-                        "Connections": no_of_connections,
-                        "Game Time": game_time,
-                    }
+                    if (players[1] == "") and (players[2] == ""):
+                        reply = {
+                            "Opponent 1": players[1],
+                            "Opponent 2": players[2],
+                            "Connections": no_of_connections,
+                            "Game Time": game_time,
+                            "won": True,
+                        }
+                    else:
+                        reply = {
+                            "Opponent 1": players[0],
+                            "Opponent 2": players[1],
+                            "Connections": no_of_connections,
+                            "Game Time": game_time,
+                            "won": False,
+                        }
                 else:
-                    reply = {
-                        "Opponent 1": players[0],
-                        "Opponent 2": players[1],
-                        "Connections": no_of_connections,
-                        "Game Time": game_time,
-                    }
+                    if (players[0] == "") and (players[1] == ""):
+                        reply = {
+                            "Opponent 1": players[0],
+                            "Opponent 2": players[1],
+                            "Connections": no_of_connections,
+                            "Game Time": game_time,
+                            "won": True,
+                        }
+                    else:
+                        reply = {
+                            "Opponent 1": players[0],
+                            "Opponent 2": players[1],
+                            "Connections": no_of_connections,
+                            "Game Time": game_time,
+                            "won": False,
+                        }
 
                 # print("Received: ", data)
                 # print("Sending : ", reply)
