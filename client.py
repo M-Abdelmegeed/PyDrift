@@ -3,13 +3,14 @@ from network import Network
 from player import Player
 import random
 from _thread import *
+from display import *
 
 
 size = width, height = (600, 600)
 road_width = int(width / 1.5)
 roadmark_width = int(width / 90)
 win = pygame.display.set_mode(size)
-pygame.display.set_caption("Car Game")
+pygame.display.set_caption("PyDrift")
 
 marker_width = 10
 marker_height = 50
@@ -37,16 +38,8 @@ def redrawWindow(
     game_over,
 ):
     win.fill((11, 52, 163))
-    # print("No of players: "+ str(reply_object["Connections"]))
     if int(reply_object["Connections"]) < 3:
-        loading_font = pygame.font.Font(None, 64)
-        loading_surface = loading_font.render(
-            "Waiting for others to join...", True, (255, 255, 255)
-        )
-        loading_rect = loading_surface.get_rect()
-        loading_rect.center = (width / 2, height / 2)
-        win.blit(loading_surface, loading_rect)
-        pygame.display.update()
+        loadingScreen(win)
     else:
         player_rect = pygame.Rect(
             player.x, player.y, player.width - 15, player.height - 10
@@ -54,7 +47,6 @@ def redrawWindow(
         pygame.draw.rect(
             win, (33, 33, 33), (width / 2 - road_width / 2, 0, road_width, height)
         )
-        # pygame.draw.rect(win,(255,240,60),(width/2 - roadmark_width/2, 0, roadmark_width,height)) //That's the center line
         pygame.draw.rect(
             win,
             (255, 255, 255),
@@ -117,60 +109,24 @@ def redrawWindow(
                 ),
             )
         if game_over == True:
-            crash_rect.center = (player_rect.x, player_rect.y)
-            win.blit(crash, crash_rect)
-            game_over_font = pygame.font.Font(None, 64)
-            game_over_surface = game_over_font.render("Game Over", True, (255, 10, 10))
-            game_over_rect = game_over_surface.get_rect()
-            game_over_rect.center = (width / 2, height / 2)
-            win.blit(game_over_surface, game_over_rect)
-            game_time_font = pygame.font.Font(None, 44)
-            score_surface = game_time_font.render(
-                "Score: " + str(score), True, (255, 255, 255)
-            )
-            score_rect = score_surface.get_rect()
-            score_rect.center = (width / 2, height / 2 + 55)
-            win.blit(score_surface, score_rect)
+            gameOver(
+                win, player_rect.x, player_rect.y, score, player
+            )  # Display game-over screen
         elif reply_object["won"] == True:
-            won_font = pygame.font.Font(None, 64)
-            won_surface = won_font.render(
-                "Congratulations, you won!", True, (15, 255, 15)
-            )
-            won_rect = won_surface.get_rect()
-            won_rect.center = (width / 2, height / 2)
-            win.blit(won_surface, won_rect)
-            score_font = pygame.font.Font(None, 44)
-            score_surface = score_font.render(
-                "Score: " + str(score), True, (255, 255, 255)
-            )
-            score_rect = score_surface.get_rect()
-            score_rect.center = (width / 2, height / 2 + 55)
-            win.blit(score_surface, score_rect)
+            displayWon(win, score)  # Display winning screen
         else:
-            # Display score
-            game_time_font = pygame.font.Font(None, 18)
-            score_surface = game_time_font.render(
-                "Score: " + str(score), True, (255, 255, 255)
-            )
-            score_rect = score_surface.get_rect()
-            score_rect.topleft = (5, 50)
-            win.blit(score_surface, score_rect)
-            # Display total game time
-            print(reply_object["Game Time"])
-            game_time_display = "Game-time: " + str(reply_object["Game Time"])
-            game_time_font = pygame.font.Font(None, 18)
-            game_time_surface = game_time_font.render(
-                game_time_display, True, (255, 255, 255)
-            )
-            game_time_rect = game_time_surface.get_rect()
-            game_time_rect.topleft = (5, 30)
-            win.blit(game_time_surface, game_time_rect)
+            displayScore(win, score)  # Display score
+            displayGameTime(win, reply_object["Game Time"])  # Display total game time
             win.blit(label_surface, label_rect)
             player.draw_car(win)
             if reply_object["Opponent 1"] != "":
                 reply_object["Opponent 1"].draw_car(win)
+            else:
+                playerEliminated("Opponent 1", win, 25, (255, 10, 10))
             if reply_object["Opponent 2"] != "":
                 reply_object["Opponent 2"].draw_car(win)
+            else:
+                playerEliminated("Opponent 2", win, 45, (255, 10, 10))
             win.blit(motorcycle, motorcycle_loc)
             win.blit(ferrari, ferrari_loc)
         pygame.display.update()
@@ -234,6 +190,10 @@ def main(playerName):
                 score,
                 gameOver,
             )
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    pygame.quit()
         while reply_object["won"]:
             reply_object = n.send({"loc": p, "crashed": False})
             label_font = pygame.font.Font(None, 24)
@@ -260,9 +220,7 @@ def main(playerName):
             lane_marker_move_y = 1
             gameOver = True
             print("Game Over")
-            # clock.tick(60)
             reply_object = n.send({"loc": p, "crashed": True})
-            # redrawWindow(win, p, reply_object,lane_marker_move_y,motorcycle,motorcycle_loc,ferrari,ferrari_loc,label_rect,label_surface,score,gameOver)
         else:
             motorcycle_loc[1] += speed
             if motorcycle_loc[1] > height:
@@ -420,4 +378,6 @@ def homeScreen():
 
 
 # homeScreen()
+
+
 main("Test")
