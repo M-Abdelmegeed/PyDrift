@@ -37,11 +37,13 @@ def gameOver(win, x, y, score, player):
     win.blit(score_surface, score_rect)
 
 
-def loadingScreen(win):
-    loading_font = pygame.font.Font(None, 64)
-    loading_surface = loading_font.render(
-        "Waiting for others to join...", True, (255, 255, 255)
-    )
+def loadingScreen(win, missing_players):
+    loading_font = pygame.font.Font(None, 58)
+    if missing_players == 1:
+        loading_string = "Waiting for 1 player to join..."
+    else:
+        loading_string = "Waiting for 2 players to join..."
+    loading_surface = loading_font.render(loading_string, True, (255, 255, 255))
     loading_rect = loading_surface.get_rect()
     loading_rect.center = (width / 2, height / 2)
     win.blit(loading_surface, loading_rect)

@@ -39,7 +39,8 @@ def redrawWindow(
 ):
     win.fill((11, 52, 163))
     if int(reply_object["Connections"]) < 3:
-        loadingScreen(win)
+        missing_players = 3 - reply_object["Connections"]
+        loadingScreen(win, missing_players)
     else:
         player_rect = pygame.Rect(
             player.x, player.y, player.width - 15, player.height - 10
@@ -155,6 +156,11 @@ ferrari_loc.center = (
 crash = pygame.image.load("Car images/crash.png")
 crash_rect = crash.get_rect()
 
+rand_num = random.randint(
+    width / 2 - road_width / 2 + roadmark_width * 2 - 6,
+    width / 2 + road_width / 2 - roadmark_width * 2 - 25,
+)
+
 
 def main(playerName):
     pygame.init()
@@ -226,13 +232,12 @@ def main(playerName):
             if motorcycle_loc[1] > height:
                 score += 1
                 motorcycle_loc[1] = -600
-                motorcycle_loc.center = (
-                    random.randint(
-                        width / 2 - road_width / 2 + roadmark_width * 2 - 6,
-                        width / 2 + road_width / 2 - roadmark_width * 2 - 25,
-                    ),
-                    0,
-                )
+                print(reply_object["Obstacle Center"])
+                # center_point = (
+                #     reply_object["Obstacle Center"],
+                #     0,
+                # )
+                motorcycle_loc.center = reply_object["Obstacle Center"]
                 if score > 0 and score % 5 == 0:
                     speed += 1  # Increase game speed
             ferrari_loc[1] += speed

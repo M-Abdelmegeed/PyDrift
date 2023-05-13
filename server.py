@@ -2,11 +2,13 @@ import socket
 from _thread import *
 from player import Player
 import pickle
+import random
 import time
 
 size = width, height = (600, 600)
 road_width = int(width / 1.5)
-server = "192.168.1.21"
+roadmark_width = int(width / 90)
+server = "192.168.1.18"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -37,6 +39,10 @@ def threaded_client(conn, player):
     while True:
         try:
             data = pickle.loads(conn.recv(2048))
+            random_int = random.randint(
+                width / 2 - road_width / 2 + roadmark_width * 2 - 6,
+                width / 2 + road_width / 2 - roadmark_width * 2 - 25,
+            )
             print("Data:", data)
             players[player] = data["loc"]
             if data["crashed"]:
@@ -53,6 +59,7 @@ def threaded_client(conn, player):
                             "Connections": no_of_connections,
                             "Game Time": game_time,
                             "won": True,
+                            "Obstacle Center": (random_int, 0),
                         }
                     else:
                         reply = {
@@ -61,6 +68,7 @@ def threaded_client(conn, player):
                             "Connections": no_of_connections,
                             "Game Time": game_time,
                             "won": False,
+                            "Obstacle Center": (random_int, 0),
                         }
                 elif player == 0:
                     if (players[1] == "") and (players[2] == ""):
@@ -70,6 +78,7 @@ def threaded_client(conn, player):
                             "Connections": no_of_connections,
                             "Game Time": game_time,
                             "won": True,
+                            "Obstacle Center": (random_int, 0),
                         }
                     else:
                         reply = {
@@ -78,6 +87,7 @@ def threaded_client(conn, player):
                             "Connections": no_of_connections,
                             "Game Time": game_time,
                             "won": False,
+                            "Obstacle Center": (random_int, 0),
                         }
                 else:
                     if (players[0] == "") and (players[1] == ""):
@@ -87,6 +97,7 @@ def threaded_client(conn, player):
                             "Connections": no_of_connections,
                             "Game Time": game_time,
                             "won": True,
+                            "Obstacle Center": (random_int, 0),
                         }
                     else:
                         reply = {
@@ -95,6 +106,7 @@ def threaded_client(conn, player):
                             "Connections": no_of_connections,
                             "Game Time": game_time,
                             "won": False,
+                            "Obstacle Center": (random_int, 0),
                         }
 
                 # print("Received: ", data)
