@@ -36,10 +36,11 @@ def redrawWindow(
     label_surface,
     score,
     game_over,
+    gameID,
 ):
     win.fill((11, 52, 163))
-    if int(reply_object["Connections"]) < 3:
-        missing_players = 3 - reply_object["Connections"]
+    if int(reply_object[gameID]["Connections"]) < 3:
+        missing_players = 3 - reply_object[gameID]["Connections"]
         loadingScreen(win, missing_players)
     else:
         player_rect = pygame.Rect(
@@ -113,19 +114,21 @@ def redrawWindow(
             gameOver(
                 win, player_rect.x, player_rect.y, score, player
             )  # Display game-over screen
-        elif reply_object["won"] == True:
+        elif reply_object[gameID]["won"] == True:
             displayWon(win, score)  # Display winning screen
         else:
             displayScore(win, score)  # Display score
-            displayGameTime(win, reply_object["Game Time"])  # Display total game time
+            displayGameTime(
+                win, reply_object[gameID]["Game Time"]
+            )  # Display total game time
             win.blit(label_surface, label_rect)
             player.draw_car(win)
-            if reply_object["Opponent 1"] != "":
-                reply_object["Opponent 1"].draw_car(win)
+            if reply_object[gameID]["Opponent 1"] != "":
+                reply_object[gameID]["Opponent 1"].draw_car(win)
             else:
                 playerEliminated("Opponent 1", win, 25, (255, 10, 10))
-            if reply_object["Opponent 2"] != "":
-                reply_object["Opponent 2"].draw_car(win)
+            if reply_object[gameID]["Opponent 2"] != "":
+                reply_object[gameID]["Opponent 2"].draw_car(win)
             else:
                 playerEliminated("Opponent 2", win, 45, (255, 10, 10))
             win.blit(motorcycle, motorcycle_loc)
@@ -168,17 +171,20 @@ def main(playerName):
     gameOver = False
     lane_marker_move_y = 0
     n = Network()
-    p = n.getP()
+    p = n.getP()["player"]
+    print("This is p", p)
+    gameID = n.getP()["gameID"]
+    print("Game id:", gameID)
     clock = pygame.time.Clock()
     score = 0
     speed = 3
 
-    reply_object = n.send({"loc": p, "crashed": False})
+    reply_object = n.send({gameID: {"loc": p, "crashed": False}})
     while run:
         player_rect = pygame.Rect(p.x - 5, p.y - 5, p.width - 15, p.height - 10)
-        while reply_object["Connections"] < 3:
-            reply_object = n.send({"loc": p, "crashed": False})
-            print("Waiting for other players...")
+        while reply_object[gameID]["Connections"] < 3:
+            reply_object = n.send({gameID: {"loc": p, "crashed": False}})
+            print("Connections in game:", reply_object[gameID]["Connections"])
             label_font = pygame.font.Font(None, 24)
             label_surface = label_font.render(playerName, True, (255, 255, 255))
 
@@ -195,13 +201,14 @@ def main(playerName):
                 label_surface,
                 score,
                 gameOver,
+                gameID,
             )
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
                     pygame.quit()
-        while reply_object["won"]:
-            reply_object = n.send({"loc": p, "crashed": False})
+        while reply_object[gameID]["won"]:
+            reply_object = n.send({gameID: {"loc": p, "crashed": False}})
             label_font = pygame.font.Font(None, 24)
             label_surface = label_font.render(playerName, True, (255, 255, 255))
             redrawWindow(
@@ -217,6 +224,7 @@ def main(playerName):
                 label_surface,
                 score,
                 gameOver,
+                gameID,
             )
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -226,18 +234,17 @@ def main(playerName):
             lane_marker_move_y = 1
             gameOver = True
             print("Game Over")
-            reply_object = n.send({"loc": p, "crashed": True})
+            reply_object = n.send({gameID: {"loc": p, "crashed": True}})
         else:
             motorcycle_loc[1] += speed
             if motorcycle_loc[1] > height:
                 score += 1
                 motorcycle_loc[1] = -600
-                print(reply_object["Obstacle Center"])
                 # center_point = (
                 #     reply_object["Obstacle Center"],
                 #     0,
                 # )
-                motorcycle_loc.center = reply_object["Obstacle Center"]
+                motorcycle_loc.center = reply_object[gameID]["Obstacle Center"]
                 if score > 0 and score % 5 == 0:
                     speed += 1  # Increase game speed
             ferrari_loc[1] += speed
@@ -251,8 +258,8 @@ def main(playerName):
                     0,
                 )
             clock.tick(60)
-            reply_object = n.send({"loc": p, "crashed": False})
-            print(reply_object["won"])
+            reply_object = n.send({gameID: {"loc": p, "crashed": False}})
+            # print(reply_object[gameID]["won"])
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -285,6 +292,7 @@ def main(playerName):
             label_surface,
             score,
             gameOver,
+            gameID,
         )
 
 
