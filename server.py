@@ -4,6 +4,7 @@ from player import Player
 import pickle
 import random
 import time
+import math
 
 size = width, height = (600, 600)
 road_width = int(width / 1.5)
@@ -132,14 +133,13 @@ def threaded_client(conn, player, gameID, games):
 
     print("Lost connection")
     try:
-        game_connections[gameID] = 0
-        games[gameID] = 0
+        no_of_connections -= 1
+        del game_connections[gameID]
+        del games[gameID]
         print("Games:", games)
         print("Closing Game", gameID)
     except:
         pass
-    # idCount -= 1
-    # no_of_connections -= 1
     conn.close()
 
 
@@ -154,25 +154,26 @@ no_of_connections = 0
 currentPlayer = 0
 game_time = 0
 total_connections = 0
-game_connections = [0]
+game_connections = []
 
 while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
     total_connections += 1
     no_of_connections += 1
-    game_connections[gameID] += 1
     if (no_of_connections % 3) == 1:
         games.append(players[:])
         print("Games list", games)
-        start_new_thread(timer, ())
-    if (no_of_connections % 3 == 1) and (no_of_connections != 1):
         gameID += 1
-        game_connections.append(1)
         print("Game connections", game_connections)
-        no_of_connections = 1
         print("Current game id:", gameID)
+        start_new_thread(timer, ())
+        game_connections.append(0)
+        print("Current Connections:", total_connections)
+    game_connections[math.ceil(no_of_connections / 3) - 1] += 1
 
-    print("Current Connections:", total_connections)
-    start_new_thread(threaded_client, (conn, currentPlayer % 3, gameID, games))
+    start_new_thread(
+        threaded_client,
+        (conn, currentPlayer % 3, math.ceil(no_of_connections / 3) - 1, games),
+    )
     currentPlayer += 1
