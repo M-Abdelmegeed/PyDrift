@@ -132,14 +132,9 @@ def threaded_client(conn, player, gameID, games):
 
     print("Lost connection")
     try:
-        del game_connections[gameID]
-        if games[gameID] == 0:
-            del games[gameID]
-            games.append(0)
-            print(games)
-        else:
-            del games[gameID]
-            print(games)
+        game_connections[gameID] = 0
+        games[gameID] = 0
+        print("Games:", games)
         print("Closing Game", gameID)
     except:
         pass
@@ -170,7 +165,6 @@ while True:
     if (no_of_connections % 3) == 1:
         games.append(players[:])
         print("Games list", games)
-        print(games[gameID])
         start_new_thread(timer, ())
     if (no_of_connections % 3 == 1) and (no_of_connections != 1):
         gameID += 1
