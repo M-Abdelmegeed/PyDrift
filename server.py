@@ -1,10 +1,22 @@
 import socket
 from _thread import *
 from player import Player
+from dotenv import load_dotenv
+from pymongo import MongoClient
 import pickle
 import random
 import time
 import math
+import os
+
+# Load connection string and connect to the database
+load_dotenv()
+mongodb_connection_string = os.getenv("MONGODB_CONNECTION_STRING")
+client = MongoClient(mongodb_connection_string)
+db = client["DB1"]
+scores_collection = "Scores"
+sessions_collection = "Sessions"
+
 
 size = width, height = (600, 600)
 road_width = int(width / 1.5)
