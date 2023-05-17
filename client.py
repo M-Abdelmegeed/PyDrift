@@ -179,11 +179,22 @@ def main(playerName):
     score = 0
     speed = 3
 
-    reply_object = n.send({gameID: {"loc": p, "crashed": False}})
+    reply_object = n.send(
+        {gameID: {"loc": p, "crashed": False, "playerName": playerName, "score": score}}
+    )
     while run:
         player_rect = pygame.Rect(p.x - 5, p.y - 5, p.width - 15, p.height - 10)
         while reply_object[gameID]["Connections"] < 3:
-            reply_object = n.send({gameID: {"loc": p, "crashed": False}})
+            reply_object = n.send(
+                {
+                    gameID: {
+                        "loc": p,
+                        "crashed": False,
+                        "playerName": playerName,
+                        "score": score,
+                    }
+                }
+            )
             print("Connections in game:", reply_object[gameID]["Connections"])
             label_font = pygame.font.Font(None, 24)
             label_surface = label_font.render(playerName, True, (255, 255, 255))
@@ -208,7 +219,16 @@ def main(playerName):
                     run = False
                     pygame.quit()
         while reply_object[gameID]["won"]:
-            reply_object = n.send({gameID: {"loc": p, "crashed": False}})
+            reply_object = n.send(
+                {
+                    gameID: {
+                        "loc": p,
+                        "crashed": False,
+                        "playerName": playerName,
+                        "score": score,
+                    }
+                }
+            )
             label_font = pygame.font.Font(None, 24)
             label_surface = label_font.render(playerName, True, (255, 255, 255))
             redrawWindow(
@@ -234,7 +254,16 @@ def main(playerName):
             lane_marker_move_y = 1
             gameOver = True
             print("Game Over")
-            reply_object = n.send({gameID: {"loc": p, "crashed": True}})
+            reply_object = n.send(
+                {
+                    gameID: {
+                        "loc": p,
+                        "crashed": True,
+                        "playerName": playerName,
+                        "score": score,
+                    }
+                }
+            )
         else:
             motorcycle_loc[1] += speed
             if motorcycle_loc[1] > height:
@@ -258,7 +287,16 @@ def main(playerName):
                     0,
                 )
             clock.tick(60)
-            reply_object = n.send({gameID: {"loc": p, "crashed": False}})
+            reply_object = n.send(
+                {
+                    gameID: {
+                        "loc": p,
+                        "crashed": False,
+                        "playerName": playerName,
+                        "score": score,
+                    }
+                }
+            )
             # print(reply_object[gameID]["won"])
 
             for event in pygame.event.get():

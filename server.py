@@ -3,6 +3,7 @@ from _thread import *
 from player import Player
 from dotenv import load_dotenv
 from pymongo import MongoClient
+from datetime import datetime
 import pickle
 import random
 import time
@@ -12,10 +13,10 @@ import os
 # Load connection string and connect to the database
 load_dotenv()
 mongodb_connection_string = os.getenv("MONGODB_CONNECTION_STRING")
-client = MongoClient(mongodb_connection_string)
+client = MongoClient(mongodb_connection_string, maxPoolSize=6)
 db = client["DB1"]
-scores_collection = "Scores"
-sessions_collection = "Sessions"
+scores_collection = db["Scores"]
+sessions_collection = db["Sessions"]
 
 
 size = width, height = (600, 600)
@@ -52,6 +53,10 @@ def threaded_client(conn, player, gameID, games):
     global idCount
     global no_of_connections
     global game_time
+    data = {"name": "", "score": 0, "timestamp": datetime.now()}
+    result = scores_collection.insert_one(data)
+    inserted_id = result.inserted_id
+    print("Inserted ID:", inserted_id)
     conn.send(pickle.dumps({"gameID": gameID, "player": games[gameID][player]}))
     reply = ""
     while True:
@@ -138,11 +143,10 @@ def threaded_client(conn, player, gameID, games):
                                 "Obstacle Center": (random_int, 0),
                             }
                         }
-
             conn.sendall(pickle.dumps(reply))
         except:
             break
-
+    updateHighScore(inserted_id, data[gameID]["playerName"], data[gameID]["score"])
     print("Lost connection")
     try:
         no_of_connections -= 1
@@ -153,6 +157,16 @@ def threaded_client(conn, player, gameID, games):
     except:
         pass
     conn.close()
+
+
+def updateHighScore(documentID, playerName, score):
+    new_data = {
+        "$set": {
+            "name": playerName,
+            "score": score,
+        }
+    }
+    scores_collection.update_one({"_id": documentID}, new_data)
 
 
 def timer():
