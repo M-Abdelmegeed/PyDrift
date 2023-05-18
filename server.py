@@ -1,22 +1,12 @@
 import socket
 from _thread import *
 from player import Player
-from dotenv import load_dotenv
-from pymongo import MongoClient
+from queries import *
 from datetime import datetime
 import pickle
 import random
 import time
 import math
-import os
-
-# Load connection string and connect to the database
-load_dotenv()
-mongodb_connection_string = os.getenv("MONGODB_CONNECTION_STRING")
-client = MongoClient(mongodb_connection_string, maxPoolSize=6)
-db = client["DB1"]
-scores_collection = db["Scores"]
-sessions_collection = db["Sessions"]
 
 
 size = width, height = (600, 600)
@@ -46,15 +36,17 @@ players = [
         width / 2 + road_width / 6 + 25, height * 0.8, 50, 50, (0, 255, 255), "corvette"
     ),
 ]
+playerNames = []
 
 
 def threaded_client(conn, player, gameID, games):
+    global playerNames
     global game_connections
     global idCount
     global no_of_connections
     global game_time
-    data = {"name": "", "score": 0, "timestamp": datetime.now()}
-    result = scores_collection.insert_one(data)
+    document_data = {"name": "", "score": 0, "timestamp": datetime.now()}
+    result = scores_collection.insert_one(document_data)
     inserted_id = result.inserted_id
     print("Inserted ID:", inserted_id)
     conn.send(pickle.dumps({"gameID": gameID, "player": games[gameID][player]}))
@@ -147,7 +139,9 @@ def threaded_client(conn, player, gameID, games):
         except:
             break
     updateHighScore(inserted_id, data[gameID]["playerName"], data[gameID]["score"])
-    print("Lost connection")
+
+    player_status = [str(item) if item != "" else "lost" for item in games[gameID]]
+    insertSession(player_status)
     try:
         no_of_connections -= 1
         del game_connections[gameID]
@@ -157,16 +151,6 @@ def threaded_client(conn, player, gameID, games):
     except:
         pass
     conn.close()
-
-
-def updateHighScore(documentID, playerName, score):
-    new_data = {
-        "$set": {
-            "name": playerName,
-            "score": score,
-        }
-    }
-    scores_collection.update_one({"_id": documentID}, new_data)
 
 
 def timer():
