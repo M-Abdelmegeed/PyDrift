@@ -12,8 +12,8 @@ import math
 size = width, height = (600, 600)
 road_width = int(width / 1.5)
 roadmark_width = int(width / 90)
-server = "192.168.1.21"
-port = 5555
+server = "52.90.61.205"
+port = 8501
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
