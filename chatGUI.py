@@ -5,18 +5,14 @@ from tkinter import *
 from tkinter import font
 from tkinter import ttk
 
-# import all functions /
-#  everything from chat.py file
-from chat import *
- 
+
 PORT = 55555
 SERVER = "127.0.0.1"
 ADDRESS = (SERVER, PORT)
  
 # Create a new client socket
 # and connect to the server
-client = socket.socket(socket.AF_INET,
-                       socket.SOCK_STREAM)
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDRESS)
  
  
@@ -50,16 +46,13 @@ class GUI:
  
         # create the Continue Button
         self.go = Button(self.login, text="CONTINUE", font="Arial 14 bold", command=lambda: self.goAhead(self.entryName.get()))
- 
         self.go.place(relx=0.4, rely=0.55)
-
 
         self.win.mainloop()
  
     def goAhead(self, name):
         self.layout(name)
- 
-        # the thread to receive messages
+
         rcv = threading.Thread(target=self.receive)
         rcv.start()
  
@@ -69,29 +62,28 @@ class GUI:
 
         # to show chat window
         self.win.deiconify()
-        self.win.title("CHATROOM")
+        self.win.title("Chat")
         self.win.resizable(width=False, height=False)
         self.win.configure(width=470, height=550, bg="#F0E68C")
 
-        self.labelHead = Label(self.win, bg="#F0E68C", fg="#000000", text=self.name, font="Arial 13 bold", pady=5)
+        self.labelHead = Label(self.win, bg="#F0E68C", fg="#000000", text="Chat", font="Arial 14 bold", pady=5)
         self.labelHead.place(relwidth=1)
         
  
-        self.text_area = Text(self.win, width=20, height=2, bg="#00008B", fg="#EAECEE", font="Arial 14", padx=5, pady=5) 
+        self.text_area = Text(self.win, width=20, height=2, bg="#00008B", fg="#EAECEE", font="Arial 15", padx=5, pady=5) 
         self.text_area.place(relheight=0.745, relwidth=1, rely=0.08)
         self.text_area.config(cursor="arrow")
 
         self.labelBottom = Label(self.win, bg="#F0E68C", height=80) 
         self.labelBottom.place(relwidth=1, rely=0.775)
  
-        self.entryMsg = Entry(self.labelBottom, font="Arial 13")
-        self.entryMsg.place(relwidth=0.74, relheight=0.06, rely=0.008, relx=0.011) 
-        self.entryMsg.focus()
+        self.input_text = Entry(self.labelBottom, font="Arial 13")
+        self.input_text.place(relwidth=0.74, relheight=0.06, rely=0.008, relx=0.011) 
+        self.input_text.focus()
  
         # create a Send Button
-        self.buttonMsg = Button(self.labelBottom, text="Send", font="Arial 10 bold", width=10, bg="#00008B", fg="#FFFFFF", command=lambda: self.sendButton(self.entryMsg.get()))
-        self.buttonMsg.place(relx=0.77, rely=0.035, relheight=0.02, relwidth=0.22)
- 
+        self.send_Button = Button(self.labelBottom, text="Send", font="Arial 10 bold", width=10, bg="#00008B", fg="#FFFFFF", command=lambda: self.write(self.input_text.get()))
+        self.send_Button.place(relx=0.77, rely=0.035, relheight=0.02, relwidth=0.22)
  
         # create a scroll bar
         scrollbar = Scrollbar(self.text_area)
@@ -101,10 +93,10 @@ class GUI:
         self.text_area.config(state=DISABLED)
  
     # function to start thread for sending messages
-    def sendButton(self, msg):
+    def write(self, msg):
         self.text_area.config(state=DISABLED)
         self.msg = msg
-        self.entryMsg.delete(0, END)
+        self.input_text.delete(0, END)
         snd = threading.Thread(target=self.sendMessage)
         snd.start()
  
