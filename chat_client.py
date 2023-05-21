@@ -1,8 +1,6 @@
 import socket
 import threading
-import tkinter
-import tkinter.scrolledtext
-from tkinter import simpledialog
+
 
 nickname = input("Choose a nickname: ")
 
@@ -24,7 +22,7 @@ def receive():
             client.close()
             break
 
-#Client can either send message or close connection
+#Client can send messages
 def write():
     while True:
         message = f'{nickname}: {input("")}'

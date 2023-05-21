@@ -15,7 +15,7 @@ server.listen()
 
 #creating list of clients and their chosen nicknames that will appear in chat
 clients = []
-nickname = []
+nicknames = []
 
 #To broadcast messages to all clients
 def broadcast(message):
@@ -50,7 +50,7 @@ def receive():
         #first thing is receive client's nickname and append it to this game's nicknames list
         client.send('NICK'.encode('utf-8'))
         nickname = client.recv(1024).decode('utf-8')
-        nickname.append(nickname)
+        nicknames.append(nickname)
         clients.append(client)
 
         print(f'Nickname of the client is {nickname}!')
