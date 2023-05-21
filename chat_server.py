@@ -26,9 +26,9 @@ def broadcast(message):
 #handling each client when they connect and disconnect
 def handle(client):
     while True:
-
         try:
             message = client.recv(1024)
+            print(f"{nicknames[clients.index(client)]} says {message}")
             broadcast(message)
 
         except:
