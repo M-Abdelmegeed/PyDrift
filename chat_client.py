@@ -1,5 +1,8 @@
 import socket
 import threading
+import tkinter
+import tkinter.scrolledtext
+from tkinter import simpledialog
 
 nickname = input("Choose a nickname: ")
 
@@ -11,9 +14,9 @@ def receive():
     while True:
         #when receiving 'NICK', client knows to send nickname to server to show in chat
         try:
-            message = client.recv(1024).decode('ascii')
+            message = client.recv(1024).decode('utf-8')
             if message == 'NICK':
-                client.send(nickname.encode('ascii'))
+                client.send(nickname.encode('utf-8'))
             else:
                 print (message)
         except:
@@ -25,7 +28,7 @@ def receive():
 def write():
     while True:
         message = f'{nickname}: {input("")}'
-        client.send(message.encode('ascii'))
+        client.send(message.encode('utf-8'))
 
 #Setting the two threads running simultaneously
 receive_thread = threading.Thread(target = receive)

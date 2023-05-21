@@ -36,7 +36,7 @@ def handle(client):
             clients.remove(client)
             client.close()
             nickname = nicknames[index]
-            broadcast(f'{nickname} left the chat!'.encode('ascii'))
+            broadcast(f'{nickname} left the chat!'.encode('utf-8'))
             nicknames.remove(nickname)
             break
 
@@ -48,14 +48,14 @@ def receive():
         print(f"Connected with {str(address)}")
 
         #first thing is receive client's nickname and append it to this game's nicknames list
-        client.send('NICK'.encode('ascii'))
-        nickname = client.recv(1024).decode('ascii')
+        client.send('NICK'.encode('utf-8'))
+        nickname = client.recv(1024).decode('utf-8')
         nickname.append(nickname)
         clients.append(client)
 
         print(f'Nickname of the client is {nickname}!')
-        broadcast(f'{nickname} joined the chat'.encode('ascii'))
-        client.send('Connected to the server!'.encode('ascii'))
+        broadcast(f'{nickname} joined the chat'.encode('utf-8'))
+        client.send('Connected to the server!'.encode('utf-8'))
 
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
