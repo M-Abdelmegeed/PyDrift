@@ -178,6 +178,8 @@ def main(playerName):
     clock = pygame.time.Clock()
     score = 0
     speed = 3
+    chat_client = ChatClient()
+    chat_gui = ChatGUI()
 
     reply_object = n.send(
         {gameID: {"loc": p, "crashed": False, "playerName": playerName, "score": score}}
@@ -338,7 +340,6 @@ input_text = ""
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("PyDrift")
 background_image = pygame.image.load("3555572.jpg").convert()
-
 
 def homeScreen():
     pygame.init()
