@@ -13,9 +13,9 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host,port))
 server.listen()
 
-#creating list of clients and their chosen nicknames that will appear in chat
+#creating list of clients and their chosen names that will appear in chat
 clients = []
-nicknames = []
+names = []
 
 #To broadcast messages to all clients
 def broadcast(message):
@@ -28,16 +28,16 @@ def handle(client):
     while True:
         try:
             message = client.recv(1024)
-            print(f"{nicknames[clients.index(client)]} says {message}")
+            print(f"{names[clients.index(client)]} says {message}")
             broadcast(message)
 
         except:
             index = clients.index(client)
             clients.remove(client)
             client.close()
-            nickname = nicknames[index]
-            broadcast(f'{nickname} left the chat!'.encode('utf-8'))
-            nicknames.remove(nickname)
+            name = names[index]
+            broadcast(f'{name} left the chat!'.encode('utf-8'))
+            names.remove(name)
             break
 
 
@@ -47,14 +47,14 @@ def receive():
         client, address = server.accept()
         print(f"Connected with {str(address)}")
 
-        #first thing is receive client's nickname and append it to this game's nicknames list
-        client.send('NICK'.encode('utf-8'))
-        nickname = client.recv(1024).decode('utf-8')
-        nicknames.append(nickname)
+        #first thing is receive client's name and append it to this game's names list
+        client.send('NAME'.encode('utf-8'))
+        name = client.recv(1024).decode('utf-8')
+        names.append(name)
         clients.append(client)
 
-        print(f'Nickname of the client is {nickname}!')
-        broadcast(f'{nickname} joined the chat'.encode('utf-8'))
+        print(f'name of the client is {name}!')
+        broadcast(f'{name} joined the chat'.encode('utf-8'))
         client.send('Connected to the server!'.encode('utf-8'))
 
         thread = threading.Thread(target=handle, args=(client,))

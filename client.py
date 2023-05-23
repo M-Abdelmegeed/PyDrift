@@ -4,7 +4,8 @@ from player import Player
 import random
 from _thread import *
 from display import *
-
+from chat import GUI
+import threading
 
 size = width, height = (600, 600)
 road_width = int(width / 1.5)
@@ -178,8 +179,9 @@ def main(playerName):
     clock = pygame.time.Clock()
     score = 0
     speed = 3
-    chat_client = ChatClient()
-    chat_gui = ChatGUI()
+
+    start_new_thread( goAhead, (playerName, ), )
+
 
     reply_object = n.send(
         {gameID: {"loc": p, "crashed": False, "playerName": playerName, "score": score}}
@@ -428,8 +430,11 @@ def homeScreen():
         # update the display
         pygame.display.flip()
 
+def goAhead(name):
+    chatgui = GUI(name)
 
-# homeScreen()
+
+homeScreen()
 
 
-main("Test")
+#main("Test")
