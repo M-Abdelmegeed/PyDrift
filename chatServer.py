@@ -7,7 +7,8 @@ import threading
 
 #setting TCP connection for chat
 # host = "127.0.0.1"
-host = "13.51.197.208"
+# 13.51.197.208
+host = ""
 port = 443
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
