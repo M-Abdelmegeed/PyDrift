@@ -6,8 +6,9 @@ import threading
 
 
 #setting TCP connection for chat
-host = "127.0.0.1"
-port = 55555
+# host = "127.0.0.1"
+host = "13.51.197.208"
+port = 3250
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host,port))

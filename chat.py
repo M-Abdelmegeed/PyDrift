@@ -7,8 +7,8 @@ from tkinter import ttk
 
 
 
-PORT = 55555
-SERVER = "127.0.0.1"
+PORT = 3250
+SERVER = "13.51.197.208"
 ADDRESS = (SERVER, PORT)
  
 # Create a new client socket
