@@ -54,7 +54,7 @@ def displayScore(win, score):
     game_time_font = pygame.font.Font(None, 18)
     score_surface = game_time_font.render("Score: " + str(score), True, (255, 255, 255))
     score_rect = score_surface.get_rect()
-    score_rect.topleft = (5, 50)
+    score_rect.topleft = (5, 40)
     win.blit(score_surface, score_rect)
 
 

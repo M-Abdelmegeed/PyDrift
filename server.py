@@ -45,7 +45,6 @@ def threaded_client(conn, player, gameID, games):
     global game_connections
     global idCount
     global no_of_connections
-    global game_time
     document_data = {"name": "", "score": 0, "timestamp": datetime.now()}
     result = scores_collection.insert_one(document_data)
     inserted_id = result.inserted_id
@@ -74,7 +73,6 @@ def threaded_client(conn, player, gameID, games):
                                 "Opponent 1": games[gameID][0],
                                 "Opponent 2": games[gameID][2],
                                 "Connections": game_connections[gameID],
-                                "Game Time": game_time,
                                 "won": True,
                                 "Obstacle Center": (random_int, 0),
                             }
@@ -85,7 +83,6 @@ def threaded_client(conn, player, gameID, games):
                                 "Opponent 1": games[gameID][0],
                                 "Opponent 2": games[gameID][2],
                                 "Connections": game_connections[gameID],
-                                "Game Time": game_time,
                                 "won": False,
                                 "Obstacle Center": (random_int, 0),
                             }
@@ -97,7 +94,6 @@ def threaded_client(conn, player, gameID, games):
                                 "Opponent 1": games[gameID][1],
                                 "Opponent 2": games[gameID][2],
                                 "Connections": game_connections[gameID],
-                                "Game Time": game_time,
                                 "won": True,
                                 "Obstacle Center": (random_int, 0),
                             }
@@ -108,7 +104,6 @@ def threaded_client(conn, player, gameID, games):
                                 "Opponent 1": games[gameID][1],
                                 "Opponent 2": games[gameID][2],
                                 "Connections": game_connections[gameID],
-                                "Game Time": game_time,
                                 "won": False,
                                 "Obstacle Center": (random_int, 0),
                             }
@@ -120,7 +115,6 @@ def threaded_client(conn, player, gameID, games):
                                 "Opponent 1": games[gameID][0],
                                 "Opponent 2": games[gameID][1],
                                 "Connections": game_connections[gameID],
-                                "Game Time": game_time,
                                 "won": True,
                                 "Obstacle Center": (random_int, 0),
                             }
@@ -131,7 +125,6 @@ def threaded_client(conn, player, gameID, games):
                                 "Opponent 1": games[gameID][0],
                                 "Opponent 2": games[gameID][1],
                                 "Connections": game_connections[gameID],
-                                "Game Time": game_time,
                                 "won": False,
                                 "Obstacle Center": (random_int, 0),
                             }
@@ -154,11 +147,11 @@ def threaded_client(conn, player, gameID, games):
     conn.close()
 
 
-def timer():
-    while True:
-        global game_time
-        game_time += 1
-        time.sleep(1)
+# def timer():
+#     while True:
+#         global game_time
+#         game_time += 1
+#         time.sleep(1)
 
 
 no_of_connections = 0
@@ -178,7 +171,7 @@ while True:
         gameID += 1
         print("Game connections", game_connections)
         print("Current game id:", gameID)
-        start_new_thread(timer, ())
+        # start_new_thread(timer, ())
         game_connections.append(0)
         print("Current Connections:", total_connections)
     game_connections[math.ceil(no_of_connections / 3) - 1] += 1

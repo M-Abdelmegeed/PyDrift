@@ -119,9 +119,9 @@ def redrawWindow(
             displayWon(win, score)  # Display winning screen
         else:
             displayScore(win, score)  # Display score
-            displayGameTime(
-                win, reply_object[gameID]["Game Time"]
-            )  # Display total game time
+            # displayGameTime(
+            #     win, reply_object[gameID]["Game Time"]
+            # )  # Display total game time
             win.blit(label_surface, label_rect)
             player.draw_car(win)
             if reply_object[gameID]["Opponent 1"] != "":
