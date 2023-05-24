@@ -4,7 +4,8 @@ from player import Player
 import random
 from _thread import *
 from display import *
-
+from chat import GUI
+import threading
 
 size = width, height = (600, 600)
 road_width = int(width / 1.5)
@@ -179,6 +180,9 @@ def main(playerName):
     score = 0
     speed = 3
 
+    start_new_thread( goAhead, (playerName, ), )
+
+
     reply_object = n.send(
         {gameID: {"loc": p, "crashed": False, "playerName": playerName, "score": score}}
     )
@@ -339,7 +343,6 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("PyDrift")
 background_image = pygame.image.load("3555572.jpg").convert()
 
-
 def homeScreen():
     pygame.init()
     # define colors
@@ -427,8 +430,11 @@ def homeScreen():
         # update the display
         pygame.display.flip()
 
+def goAhead(name):
+    chatgui = GUI(name)
 
-# homeScreen()
+
+homeScreen()
 
 
-main("Test")
+#main("Test")
