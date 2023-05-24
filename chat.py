@@ -7,7 +7,7 @@ from tkinter import ttk
 
 
 
-PORT = 3250
+PORT = 443
 SERVER = "13.51.197.208"
 ADDRESS = (SERVER, PORT)
  
