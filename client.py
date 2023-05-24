@@ -133,7 +133,7 @@ def redrawWindow(
             else:
                 playerEliminated("Opponent 2", win, 45, (255, 10, 10))
             win.blit(motorcycle, motorcycle_loc)
-            win.blit(ferrari, ferrari_loc)
+            # win.blit(ferrari, ferrari_loc)
         pygame.display.update()
 
 
@@ -178,7 +178,7 @@ def main(playerName):
     print("Game id:", gameID)
     clock = pygame.time.Clock()
     score = 0
-    speed = 3
+    speed = 5
 
     start_new_thread( goAhead, (playerName, ), )
 
@@ -278,18 +278,18 @@ def main(playerName):
                 #     0,
                 # )
                 motorcycle_loc.center = reply_object[gameID]["Obstacle Center"]
-                if score > 0 and score % 5 == 0:
+                if score > 0 and score % 3 == 0:
                     speed += 1  # Increase game speed
-            ferrari_loc[1] += speed
-            if ferrari_loc[1] > height:
-                ferrari_loc[1] = -600
-                ferrari_loc.center = (
-                    random.randint(
-                        width / 2 - road_width / 2 + roadmark_width * 2 - 6,
-                        width / 2 + road_width / 2 - roadmark_width * 2 - 25,
-                    ),
-                    0,
-                )
+            # ferrari_loc[1] += speed
+            # if ferrari_loc[1] > height:
+            #     ferrari_loc[1] = -600
+            #     ferrari_loc.center = (
+            #         random.randint(
+            #             width / 2 - road_width / 2 + roadmark_width * 2 - 6,
+            #             width / 2 + road_width / 2 - roadmark_width * 2 - 25,
+            #         ),
+            #         0,
+            #     )
             clock.tick(60)
             reply_object = n.send(
                 {
