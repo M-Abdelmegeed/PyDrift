@@ -25,10 +25,16 @@ def insertSession(players):
 
 
 def updateHighScore(documentID, playerName, score):
-    new_data = {
-        "$set": {
-            "name": playerName,
-            "score": score,
+    doc = scores_collection.find_one({"_id": documentID})
+    if doc["score"] < score:
+        new_data = {
+            "$set": {
+                "name": playerName,
+                "score": score,
+            }
         }
-    }
-    scores_collection.update_one({"_id": documentID}, new_data)
+        scores_collection.update_one({"_id": documentID}, new_data)
+
+
+# scores_collection.delete_many({})
+# print("Queries executed successfully!")

@@ -74,7 +74,7 @@ def displayWon(win, score):
     won_rect.center = (width / 2, height / 2)
     win.blit(won_surface, won_rect)
     score_font = pygame.font.Font(None, 44)
-    score_surface = score_font.render("Score: " + str(score), True, (255, 255, 255))
+    score_surface = score_font.render("Score: " + str(score + 1), True, (255, 255, 255))
     score_rect = score_surface.get_rect()
     score_rect.center = (width / 2, height / 2 + 55)
     win.blit(score_surface, score_rect)

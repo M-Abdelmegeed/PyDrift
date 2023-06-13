@@ -45,10 +45,6 @@ def threaded_client(conn, player, gameID, games):
     global game_connections
     global idCount
     global no_of_connections
-    document_data = {"name": "", "score": 0, "timestamp": datetime.now()}
-    result = scores_collection.insert_one(document_data)
-    inserted_id = result.inserted_id
-    print("Inserted ID:", inserted_id)
     conn.send(pickle.dumps({"gameID": gameID, "player": games[gameID][player]}))
     reply = ""
     while True:
@@ -132,10 +128,22 @@ def threaded_client(conn, player, gameID, games):
             conn.sendall(pickle.dumps(reply))
         except:
             break
+    if gameID < len(games):
+        player_status = [str(item) if item != "" else "lost" for item in games[gameID]]
+        insertSession(player_status)
+    else:
+        print("Invalid gameID")
+    # player_status = [str(item) if item != "" else "lost" for item in games[gameID]]
+    x = scores_collection.find_one({"name": data[gameID]["playerName"]})
+    if x == None:
+        document_data = {"name": "", "score": 0, "timestamp": datetime.now()}
+        result = scores_collection.insert_one(document_data)
+        inserted_id = result.inserted_id
+    else:
+        inserted_id = x["_id"]
+    print("Inserted ID:", inserted_id)
     updateHighScore(inserted_id, data[gameID]["playerName"], data[gameID]["score"])
 
-    player_status = [str(item) if item != "" else "lost" for item in games[gameID]]
-    insertSession(player_status)
     try:
         no_of_connections -= 1
         del game_connections[gameID]
